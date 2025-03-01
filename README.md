@@ -1,10 +1,5 @@
 # nn_article_25
 
-.
-
-Hi, I'm here!!! :)
-
-Here’s a README template tailored to your project:
 
 ---
 
