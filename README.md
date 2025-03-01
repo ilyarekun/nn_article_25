@@ -1,8 +1,3 @@
-# nn_article_25
-
-
----
-
 # Brain Tumor Detection and Classification using Comprehensive CNN Model
 
 ## Overview
