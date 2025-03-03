@@ -5,6 +5,24 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 
+""" 
+TODO:
+
+Stratified split (keep class distribution):
+    Train: 70% (e.g. 70% from each class).
+    Validation: 15% (for early stopping and hyperparameter tuning).
+    Test: 15% (only for final evaluation).
+
+Example for Glioma class:   
+    Train: 1621 * 0.7 ≈ 1135
+    Val: ( 1621 - 1135 ) / 2 = 243
+    Test: 243
+
+output size: 512 * 512 * 3
+
+add requirements to requirements.txt
+"""
+
 def data_preprocessing_tumor():
     # 1. Download the dataset from KaggleHub
     dataset_path = kagglehub.dataset_download("masoudnickparvar/brain-tumor-mri-dataset")
