@@ -61,3 +61,5 @@ class BrainCNN(nn.Module):
         out = self.fc3(out)
         
         return out
+    
+    
