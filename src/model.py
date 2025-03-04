@@ -4,62 +4,54 @@ import torch.nn.functional as F
 
 class BrainCNN(nn.Module):
     def __init__(self):
-        self.conv1 = nn.conv2d(3, 64, (7,7), padding = 1)
-        self.conv2 = nn.conv2d(64, 128, (7,7), padding = 1)
-        self.conv3 = nn.conv2d(128, 128, (7,7), padding = 1)
-        self.conv4 = nn.conv2d(128, 256, (7,7), padding = 1)
-        self.conv5 = nn.conv2d(256, 256, (7,7), padding = 1)
-        self.conv6 = nn.conv2d(256, 512, (7,7), padding = 1)
+        super(BrainCNN, self).__init__()
         
-        self.bn1 = nn.BatchNorm2d(64)
-        self.bn2 = nn.BatchNorm2d(128)
-        self.bn3 = nn.BatchNorm2d(128)
-        self.bn4 = nn.BatchNorm2d(256)
-        self.bn5 = nn.BatchNorm2d(256)
-        self.bn6 = nn.BatchNorm2d(512)
-        
-        self.fc1 = nn.Linear(512 *3*3, 1024)
-        self.fc2 = nn.Linear(1024, 512)
-        self.fc3 = nn.Linear(512, 4)
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=7, stride=1, padding=0),   # valid -> padding=0
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(2),
+            
+            nn.Conv2d(64, 128, kernel_size=7, stride=1, padding=3),  # same -> padding=3
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(2),
+            
+            nn.Conv2d(128, 128, kernel_size=7, stride=1, padding=3),
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(2),
+            
+            nn.Conv2d(128, 256, kernel_size=7, stride=1, padding=3),
+            nn.ReLU(),
+            nn.BatchNorm2d(256),
+            nn.MaxPool2d(2),
+            
+            nn.Conv2d(256, 256, kernel_size=7, stride=1, padding=3),
+            nn.ReLU(),
+            nn.BatchNorm2d(256),
+            nn.MaxPool2d(2),
+            
+            nn.Conv2d(256, 512, kernel_size=7, stride=1, padding=3),
+            nn.ReLU(),
+            nn.BatchNorm2d(512),
+            nn.MaxPool2d(2)
+        )
+        self.fc_layers = nn.Sequential(
+            nn.Linear(512 * 3 * 3, 1024),
+            nn.ReLU(),
+            nn.Dropout(p=0.25),
+            
+            nn.Linear(1024, 512),
+            nn.ReLU(),
+            nn.Dropout(p=0.25),
+            
+            nn.Linear(512, 4),
+            nn.Softmax(dim=1)
+        )
         
     def forward(self, x):
-        out = self.conv1(x)
-        out = F.relu(out)
-        out = self.bn1(out)
-        out = F.max_pool2d(out, (2,2))
-        
-        out = self.conv2(out)
-        out = F.relu(out)
-        out = self.bn2(out)
-        out = F.max_pool2d(out, (2,2))
-        
-        out = self.conv3(out)
-        out = F.relu(out)
-        out = self.bn3(out)
-        out = F.max_pool2d(out, (2,2))
-        
-        out = self.conv4(out)
-        out = F.relu(out)
-        out = self.bn4(out)
-        out = F.max_pool2d(out, (2,2))
-        
-        out = self.conv5(out)
-        out = F.relu(out)
-        out = self.bn5(out)
-        out = F.max_pool2d(out, (2,2))
-        
-        out = self.conv6(out)
-        out = F.relu(out)
-        out = self.bn6(out)
-        out = F.max_pool2d(out, (2,2))
-        
-        out = out.view(out.shape[0], -1)     # 5. Flatten
-        out = self.fc1(out)
-        out = F.dropout(out, 0.25)
-        out = self.fc2(out)
-        out = F.dropout(out, 0.25)
-        out = self.fc3(out)
-        
+        out = self.conv_layers(x)
+        out = out.view(out.size(0), -1)     # Flatten
+        out = self.fc_layers(out)
         return out
-    
-    

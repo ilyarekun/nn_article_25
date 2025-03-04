@@ -10,15 +10,11 @@ TODO:
 
 Stratified split (keep class distribution):
     Train: 70% (e.g. 70% from each class).
-    Validation: 15% (for early stopping and hyperparameter tuning).
-    Test: 15% (only for final evaluation).
+    Validation: 10% (for early stopping and hyperparameter tuning).
+    Test: 20% (only for final evaluation).
 
-Example for Glioma class:   
-    Train: 1621 * 0.7 ≈ 1135
-    Val: ( 1621 - 1135 ) / 2 = 243
-    Test: 243
 
-output size: 512 * 512 * 3
+output size: 256 * 256 * 3
 
 add requirements to requirements.txt
 """
