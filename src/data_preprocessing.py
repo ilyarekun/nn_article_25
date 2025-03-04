@@ -2,22 +2,9 @@ import kagglehub
 import os
 import torch
 import torchvision.transforms as transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
 from torchvision.datasets import ImageFolder
-
-""" 
-TODO:
-
-Stratified split (keep class distribution):
-    Train: 70% (e.g. 70% from each class).
-    Validation: 10% (for early stopping and hyperparameter tuning).
-    Test: 20% (only for final evaluation).
-
-
-output size: 256 * 256 * 3
-
-add requirements to requirements.txt
-"""
+from sklearn.model_selection import train_test_split
 
 def data_preprocessing_tumor():
     # 1. Download the dataset from KaggleHub
@@ -33,32 +20,26 @@ def data_preprocessing_tumor():
         transforms.ToTensor(),          # Convert images to PyTorch tensors
     ])
 
-    # 4. Use ImageFolder to automatically load images and assign labels
+    # 4. Load datasets with ImageFolder
     train_dataset = ImageFolder(root=train_path, transform=transform)
     test_dataset = ImageFolder(root=test_path, transform=transform)
 
-    # 5. Create DataLoader to load batches of images efficiently
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)  # Shuffle training data
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)  # No shuffle for testing
+    # 5. Perform stratified split on the training dataset
+    indices = list(range(len(train_dataset)))
+    # 70% training, 10% validation from the training set (например, если training set уже 80% от общего количества, 
+    # то можно скорректировать проценты)
+    train_idx, valid_idx = train_test_split(
+        indices,
+        test_size=0.125,  # 0.125 от train_dataset = примерно 10% от общего набора, если исходный split 70/20/10
+        stratify=train_dataset.targets,
+        random_state=42
+    )
+    train_subset = Subset(train_dataset, train_idx)
+    valid_subset = Subset(train_dataset, valid_idx)
 
-    return train_loader, test_loader
+    # 6. Create DataLoaders for training, validation, and testing
+    train_loader = DataLoader(train_subset, batch_size=32, shuffle=True)
+    valid_loader = DataLoader(valid_subset, batch_size=32, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-    # 6. Print dataset details
-    # print("Number of training samples:", len(train_dataset))
-    # print("Number of testing samples:", len(test_dataset))
-    # print("Class dictionary:", train_dataset.class_to_idx)  # Mapping of class names to indices
-
-    # 7. Display a sample image with its class label
-    # import matplotlib.pyplot as plt
-
-    # def show_image(tensor, label):
-    #     img = tensor.permute(1, 2, 0)  # Convert (C, H, W) to (H, W, C) for visualization
-    #     plt.imshow(img)  # Display the image
-    #     plt.title(f"Class: {label}")  # Show class label
-    #     plt.axis("off")  # Hide axis for cleaner visualization
-    #     plt.show()
-
-    # #  8. Select the first image from the dataset and display it
-    # image, label = train_dataset[0]  # Get the first image and its label
-    # show_image(image, label)
-
+    return train_loader, valid_loader, test_loader
