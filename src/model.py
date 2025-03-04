@@ -9,7 +9,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from data_preprocessing import data_preprocessing_tumor
 
 
-
 class BrainCNN(nn.Module):
     def __init__(self):
         super(BrainCNN, self).__init__()
@@ -54,8 +53,8 @@ class BrainCNN(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=0.25),
             
-            nn.Linear(512, 4),
-            nn.Softmax(dim=1)
+            nn.Linear(512, 4)
+            #nn.Softmax(dim=1)
         )
         
     def forward(self, x):
