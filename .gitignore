@@ -6,6 +6,7 @@ venv/
 .idea/
 
 .ipynb_checkpoints
+src/__pycache__/
 
 src/lab03-cnn.ipynb
 src/MNIST

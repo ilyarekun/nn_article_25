@@ -21,25 +21,36 @@ def data_preprocessing_tumor():
     ])
 
     # 4. Load datasets with ImageFolder
-    train_dataset = ImageFolder(root=train_path, transform=transform)
-    test_dataset = ImageFolder(root=test_path, transform=transform)
+    full_train_dataset = ImageFolder(root=train_path, transform=transform)
+    full_test_dataset = ImageFolder(root=test_path, transform=transform)
 
-    # 5. Perform stratified split on the training dataset
-    indices = list(range(len(train_dataset)))
-    # 70% training, 10% validation from the training set (например, если training set уже 80% от общего количества, 
-    # то можно скорректировать проценты)
-    train_idx, valid_idx = train_test_split(
-        indices,
-        test_size=0.125,  # 0.125 от train_dataset = примерно 10% от общего набора, если исходный split 70/20/10
-        stratify=train_dataset.targets,
+    # 5. Adjust test set to 10% of total dataset
+    test_indices = list(range(len(full_test_dataset)))
+    new_test_size = len(test_indices) // 2  # 10% of total dataset (50% of current test set)
+
+    test_idx, _ = train_test_split(
+        test_indices,
+        test_size=0.5,  # Keep only half of the original test set
+        stratify=full_test_dataset.targets,
         random_state=42
     )
-    train_subset = Subset(train_dataset, train_idx)
-    valid_subset = Subset(train_dataset, valid_idx)
+    new_test_subset = Subset(full_test_dataset, test_idx)
 
-    # 6. Create DataLoaders for training, validation, and testing
+    # 6. Split train into 70% train and 20% validation
+    train_indices = list(range(len(full_train_dataset)))
+    train_idx, valid_idx = train_test_split(
+        train_indices,
+        test_size=0.25,  # 20% of total dataset (since train was originally 80%)
+        stratify=full_train_dataset.targets,
+        random_state=42
+    )
+
+    train_subset = Subset(full_train_dataset, train_idx)
+    valid_subset = Subset(full_train_dataset, valid_idx)
+
+    # 7. Create DataLoaders
     train_loader = DataLoader(train_subset, batch_size=32, shuffle=True)
     valid_loader = DataLoader(valid_subset, batch_size=32, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+    test_loader = DataLoader(new_test_subset, batch_size=32, shuffle=False)
 
     return train_loader, valid_loader, test_loader
