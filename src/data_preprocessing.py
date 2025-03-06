@@ -54,3 +54,55 @@ def data_preprocessing_tumor():
     test_loader = DataLoader(new_test_subset, batch_size=32, shuffle=False)
 
     return train_loader, valid_loader, test_loader
+
+
+import os
+import kagglehub
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+def cropping_images():
+    # Скачивание датасета
+    dataset_path = kagglehub.dataset_download("masoudnickparvar/brain-tumor-mri-dataset")
+
+    # Пути к папкам с изображениями
+    train_path = os.path.join(dataset_path, "Training")
+    test_path = os.path.join(dataset_path, "Testing")
+
+    # Получаем список файлов изображений из тренировочной выборки
+    class_dirs = os.listdir(train_path)  # Папки с разными классами
+    image_paths = []
+    
+    for class_dir in class_dirs:
+        class_path = os.path.join(train_path, class_dir)
+        if os.path.isdir(class_path):
+            images = [os.path.join(class_path, img) for img in os.listdir(class_path) if img.endswith(('.png', '.jpg', '.jpeg'))]
+            image_paths.extend(images)
+    
+    # Выбираем первые два изображения
+    sample_images = image_paths[:2]
+
+    # Обрезка и отображение изображений
+    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+    for i, img_path in enumerate(sample_images):
+        img = cv2.imread(img_path)  # Загружаем изображение
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Преобразуем в RGB
+
+        # Обрезаем 28 пикселей с каждой стороны
+        cropped_img = img[28:-28, 28:-28]
+
+        # Отображаем исходное и обрезанное изображения
+        axes[i, 0].imshow(img)
+        axes[i, 0].set_title("Original Image")
+        axes[i, 0].axis("off")
+
+        axes[i, 1].imshow(cropped_img)
+        axes[i, 1].set_title("Cropped Image")
+        axes[i, 1].axis("off")
+
+    plt.show()
+
+cropping_images()
+
+    
