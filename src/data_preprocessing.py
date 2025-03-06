@@ -16,7 +16,8 @@ def data_preprocessing_tumor():
 
     # 3. Define image transformations
     transform = transforms.Compose([
-        transforms.Resize((256, 256)),  # Resize images to 256x256 pixels
+        transforms.CenterCrop((400,400)),
+        transforms.Resize((200, 200)),  # Resize images to 256x256 pixels
         transforms.ToTensor(),          # Convert images to PyTorch tensors
     ])
 
@@ -90,8 +91,8 @@ def cropping_images():
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Преобразуем в RGB
 
         # Обрезаем 28 пикселей с каждой стороны
-        cropped_img = img[28:-28, 28:-28]
-
+        cropped_img = img[56:-56, 56:-56]
+        print(cropped_img.shape)
         # Отображаем исходное и обрезанное изображения
         axes[i, 0].imshow(img)
         axes[i, 0].set_title("Original Image")
@@ -102,7 +103,6 @@ def cropping_images():
         axes[i, 1].axis("off")
 
     plt.show()
-
-cropping_images()
+    
 
     
