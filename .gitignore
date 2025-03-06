@@ -15,3 +15,4 @@ src/__pycache__/model.cpython-313.pyc
 
 job_ilyarekun.slurm
 src/__pycache__/
+notebooks/training_plots.png

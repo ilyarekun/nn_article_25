@@ -37,6 +37,7 @@ def data_preprocessing_tumor():
         transforms.CenterCrop((400,400)), #from input 512x512 to 400x400
         transforms.Resize((200, 200)),  # Resize images to 200х200 pixels
         transforms.ToTensor(),          # Convert images to PyTorch tensors
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize
     ])
 
     # 4. Load datasets with ImageFolder
