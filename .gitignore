@@ -15,3 +15,10 @@ src/__pycache__/model.cpython-313.pyc
 
 job_ilyarekun.slurm
 src/__pycache__/
+
+
+error.log
+notebooks/braincnn_prototype.weights
+notebooks/python_output.log
+notebooks/training_plots.png
+output.log

@@ -14,12 +14,12 @@ class BrainCNN(nn.Module):
         super(BrainCNN, self).__init__()
         
         self.conv_layers = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=7, stride=1, padding=3),   # valid -> padding=0
+            nn.Conv2d(3, 64, kernel_size=7, stride=1, padding=3),   
             nn.ReLU(),
             nn.BatchNorm2d(64),
             nn.MaxPool2d(2),
             
-            nn.Conv2d(64, 128, kernel_size=7, stride=1, padding=3),  # same -> padding=3
+            nn.Conv2d(64, 128, kernel_size=7, stride=1, padding=3),  
             nn.ReLU(),
             nn.BatchNorm2d(128),
             nn.MaxPool2d(2),
