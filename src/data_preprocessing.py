@@ -8,6 +8,40 @@ from torch.utils.data import random_split as randspl
 
 from torchvision.datasets import ImageFolder
 
+
+
+def data_norm(train_path):
+    transform = transforms.Compose([
+        transforms.CenterCrop((400,400)), #from input 512x512 to 400x400
+        transforms.Resize((200, 200)),  # Resize images to 200х200 pixels
+        transforms.ToTensor()        
+    ])
+    
+    dataset = ImageFolder(root=train_path, transform=transform)
+
+    loader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=4)
+    
+    
+    mean = torch.zeros(3)
+    std = torch.zeros(3)
+    total_samples = 0    
+    for data,_ in loader:
+        batch_samples = data.size(0)
+        data = data.view(batch_samples, data.size(1), -1)
+        mean += data.mean(2).sum(0)
+        std += data.std(2).sum(0)
+        total_samples += batch_samples
+        
+    mean /= total_samples
+    std /= total_samples
+    print(f"Mean: {mean}")
+    print(f"Std: {std}")
+    
+    return mean, std
+
+
+
+
 def data_preprocessing_tumor():
     # 1. Download the dataset from KaggleHub
     dataset_path = kagglehub.dataset_download("masoudnickparvar/brain-tumor-mri-dataset")
@@ -37,7 +71,7 @@ def data_preprocessing_tumor():
         transforms.CenterCrop((400,400)), #from input 512x512 to 400x400
         transforms.Resize((200, 200)),  # Resize images to 200х200 pixels
         transforms.ToTensor(),          # Convert images to PyTorch tensors
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize
+        #transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize
     ])
 
     # 4. Load datasets with ImageFolder
@@ -58,9 +92,9 @@ def data_preprocessing_tumor():
     
 
     # 7. Create DataLoaders
-    train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_set, batch_size=32, shuffle=False)
-    test_loader = DataLoader(test_set, batch_size=32, shuffle=False)
+    train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
+    val_loader = DataLoader(val_set, batch_size=64, shuffle=False)
+    test_loader = DataLoader(test_set, batch_size=64, shuffle=False)
 
     return train_loader, val_loader, test_loader
 

@@ -1,12 +1,4 @@
-import os
-import torch
 from torch import nn
-import torch.optim as optim
-import torchvision.transforms as transforms
-from torch.utils.data import DataLoader, Subset
-from torchvision.datasets import ImageFolder
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from data_preprocessing import data_preprocessing_tumor
 
 
 class BrainCNN(nn.Module):
@@ -14,53 +6,52 @@ class BrainCNN(nn.Module):
         super(BrainCNN, self).__init__()
         
         self.conv_layers = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),   # valid -> padding=0
+            nn.Conv2d(3, 64, kernel_size=7, stride=1, padding=3),   
             nn.ReLU(),
             nn.BatchNorm2d(64),
             nn.MaxPool2d(2),
-            #nn.Dropout(p=0.3),
+            nn.Dropout2d(0.4),
             
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),  # same -> padding=3
+            nn.Conv2d(64, 128, kernel_size=7, stride=1, padding=3),  
             nn.ReLU(),
             nn.BatchNorm2d(128),
             nn.MaxPool2d(2),
-            #nn.Dropout(p=0.3),
+            nn.Dropout2d(0.4),
             
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(128, 128, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
             nn.BatchNorm2d(128),
             nn.MaxPool2d(2),
-            #nn.Dropout(p=0.3),
+            nn.Dropout2d(p=0.4),
             
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(128, 256, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2),
-            #nn.Dropout(p=0.3),
+            nn.Dropout2d(0.4),
             
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(256, 256, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2),
-            #nn.Dropout(p=0.3),
+            nn.Dropout2d(p=0.4),
             
-            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(256, 512, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
             nn.BatchNorm2d(512),
-            nn.MaxPool2d(2)
-            #nn.Dropout(p=0.3),
-
+            nn.MaxPool2d(2),
+            nn.Dropout2d(0.4)
         )
         self.fc_layers = nn.Sequential(
             nn.Linear(512 * 3 * 3, 1024),
             nn.ReLU(),
-            nn.Dropout(p=0.3),
+            nn.Dropout(p=0.4),
             
             nn.Linear(1024, 512),
             nn.ReLU(),
-            nn.Dropout(p=0.3),
+            nn.Dropout(p=0.4),
             
-            nn.Linear(512, 4)
+            nn.Linear(512, 4),
         )
         
     def forward(self, x):
