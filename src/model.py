@@ -10,25 +10,25 @@ class BrainCNN(nn.Module):
             nn.ReLU(),
             nn.BatchNorm2d(64),
             nn.MaxPool2d(2),
-            nn.Dropout2d(0.4),
+            nn.Dropout2d(0.45),
             
             nn.Conv2d(64, 128, kernel_size=7, stride=1, padding=3),  
             nn.ReLU(),
             nn.BatchNorm2d(128),
             nn.MaxPool2d(2),
-            nn.Dropout2d(0.4),
+            nn.Dropout2d(0.45),
             
             nn.Conv2d(128, 128, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
             nn.BatchNorm2d(128),
             nn.MaxPool2d(2),
-            nn.Dropout2d(p=0.4),
+            nn.Dropout2d(p=0.45),
             
             nn.Conv2d(128, 256, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
             nn.BatchNorm2d(256),
             nn.MaxPool2d(2),
-            nn.Dropout2d(0.4),
+            nn.Dropout2d(0.45),
             
             nn.Conv2d(256, 256, kernel_size=7, stride=1, padding=3),
             nn.ReLU(),
@@ -89,55 +89,3 @@ class EarlyStopping:
         model.load_state_dict(self.best_model_state)
         
         
-        
-import torch
-from torch import nn
-class EnhancedBrainCNN(nn.Module):
-    def __init__(self):
-        super(EnhancedBrainCNN, self).__init__()
-        
-        self.conv_layers = nn.Sequential(
-            # Блок 1
-            nn.Conv2d(3, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.Dropout2d(0.1),
-            nn.MaxPool2d(2),  # 200 -> 100
-            
-            # Блок 2
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU(),
-            nn.Dropout2d(0.2),
-            nn.MaxPool2d(2),  # 100 -> 50
-            
-            # Блок 3
-            nn.Conv2d(128, 256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(),
-            nn.Dropout2d(0.3),
-            nn.MaxPool2d(2),  # 50 -> 25
-            
-            # Блок 4
-            nn.Conv2d(256, 512, kernel_size=3, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(),
-        )
-        
-        self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
-        
-        self.fc_layers = nn.Sequential(
-            nn.Linear(512, 256),
-            nn.BatchNorm1d(256),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            
-            nn.Linear(256, 4)
-        )
-        
-    def forward(self, x):
-        out = self.conv_layers(x)
-        out = self.global_pool(out)
-        out = out.view(out.size(0), -1)
-        out = self.fc_layers(out)
-        return out
