@@ -1,6 +1,6 @@
 # Brain Tumor Classification with CNN (Optimized Model)
 
-This repository contains an optimized implementation of a convolutional neural network for brain tumor classification, building on our [original replication study](https://github.com/ilyarekun/nn_article_25/tree/article_model)). The enhanced model achieves **96.32% F1-score** through improved regularization and training strategies.
+This repository contains an optimized implementation of a convolutional neural network for brain tumor classification, building on our [original replication study](https://github.com/ilyarekun/nn_article_25/tree/article_model). The enhanced model achieves **96.32% F1-score** through improved regularization and training strategies.
 
 ## Dataset Overview
 
