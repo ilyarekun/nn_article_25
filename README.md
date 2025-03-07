@@ -52,11 +52,42 @@ This repository contains an implementation of a convolutional neural network (CN
 
 - **Optimizer:** Stochastic Gradient Descent (SGD)
 - **Learning Rate:** 0.001
+- **Momentum:** 0.9
 - **Loss Function:** Cross Entropy Loss
+- **Evaluation metric:** Categorical accuracy
 - **Regularization:**
   - Batch Normalization after each conv layer
   - Dropout (p=0.25) in FC layers
-  - Early Stopping (patience=3, monitoring validation loss)
+  - Early Stopping
+  - Weight decay 0.001
 - **Batch Size:** 32 (standard configuration)
-- **Epochs:** 100 (with early stopping)
+- **Epochs:** 30 (with early stopping)
+- **Pacience:** 5
 
+
+## Results
+
+The trained model achieved the following performance metrics on the test set:
+
+| Metric     | Value   |
+|------------|---------|
+| Accuracy   | 98.47%  |
+| Precision  | 98.49%  |
+| Recall     | 98.47%  |
+| F1 Score   | 98.47%  |
+
+### Training Dynamics
+![Training Metrics](notebooks/training_plots.png)  
+*Figure 1: Training/validation loss and accuracy progression across epochs.*
+
+### Classification Performance
+![Confusion Matrix](notebooks/confusion_matrix.png)  
+*Figure 2: Normalized confusion matrix showing per-class prediction accuracy (4 tumor categories).*
+
+## Performance Considerations
+
+**Important Context:** The original implementation used a non-standard validation strategy where the test set served dual purpose for both validation and final evaluation. This methodological flaw likely contributes to the inflated metrics shown below. Our replication using this approach demonstrated clear signs of overtraining despite regularization efforts.
+
+
+### Implementation Update:
+  A revised version with proper train/val/test splits is available on [`main` branch]().

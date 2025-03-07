@@ -1,24 +1,28 @@
+# Data
 data/
 
+# Virtual Environment
 venv/
 
+# IDE Configurations
 .vscode/
 .idea/
 
-.ipynb_checkpoints
-src/__pycache__/
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
 
+# Python Bytecode Cache
+__pycache__/
+
+# Specific files and directories to ignore
 src/lab03-cnn.ipynb
-src/MNIST
-src/__pycache__/data_preprocessing.cpython-313.pyc
-src/__pycache__/model.cpython-313.pyc
-
-job_ilyarekun.slurm
+src/MNIST/
 src/__pycache__/
 
+# SLURM job file
+job_ilyarekun.slurm
 
+# Logs
 error.log
-notebooks/braincnn_prototype.weights
-notebooks/python_output.log
-notebooks/training_plots.png
 output.log
+

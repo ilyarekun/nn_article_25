@@ -1,13 +1,4 @@
-import os
-import torch
 from torch import nn
-import torch.optim as optim
-import torchvision.transforms as transforms
-from torch.utils.data import DataLoader, Subset
-from torchvision.datasets import ImageFolder
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from data_preprocessing import data_preprocessing_tumor
-
 
 class BrainCNN(nn.Module):
     def __init__(self):
@@ -53,8 +44,7 @@ class BrainCNN(nn.Module):
             nn.ReLU(),
             nn.Dropout(p=0.25),
             
-            nn.Linear(512, 4)
-            #nn.Softmax(dim=1)
+            nn.Linear(512, 4),
         )
         
     def forward(self, x):
